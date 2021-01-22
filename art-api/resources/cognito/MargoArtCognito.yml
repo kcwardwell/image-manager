@@ -1,0 +1,98 @@
+MargoArtUserPool:
+  Type: AWS::Cognito::UserPool
+  Properties:
+    UserPoolName: margo_art_user_pool
+    AliasAttributes: [preferred_username]
+    # Cognito - Client
+MargoArtUserPoolClient:
+  Type: AWS::Cognito::UserPoolClient
+  Properties:
+    ClientName: margoart_artwork_client
+    UserPoolId:
+      Ref: MargoArtUserPool
+    # Cognito - Identity
+MargoArtIdentityPool:
+  Type: AWS::Cognito::IdentityPool
+  Properties:
+    IdentityPoolName: ecs_notes_identity_pool
+    AllowUnauthenticatedIdentities: false
+    CognitoIdentityProviders:
+      - ClientId:
+          Ref: MargoArtUserPoolClient
+        ProviderName:
+          Fn::GetAtt: [MargoArtUserPool, ProviderName]
+    # Cognito roles
+MargoArtIdentityPoolRoles:
+  Type: AWS::Cognito::IdentityPoolRoleAttachment
+  Properties:
+    IdentityPoolId:
+      Ref: MargoArtIdentityPool
+    Roles:
+      authenticated:
+        Fn::GetAtt: [MargoArtAuthRole, Arn]
+      unauthenticated:
+        Fn::GetAtt: [MargoArtUnauthRole, Arn]
+MargoArtAuthRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: margoArtAuthRole
+    Path: /
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Federated: "cognito-identity.amazonaws.com"
+          Action:
+            - "sts:AssumeRoleWithWebIdentity"
+          Condition:
+            StringEquals:
+              "cognito-identity.amazonaws.com:aud":
+                Ref: MargoArtIdentityPool
+            "ForAnyValue:StringLike":
+              "cognito-identity.amazonaws.com:amr": authenticated
+    Policies:
+      - PolicyName: "MargoArtAuthorizedPolicy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "mobileanalytics:PutEvents"
+                - "cognito-sync:*"
+                - "cognito-identity:*"
+              Resource: "*"
+            - Effect: "Allow"
+              Action:
+                    - "execute-api:Invoke"
+              Resource: "*"
+MargoArtUnauthRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: margoArtUnauthRole
+    Path: /
+    AssumeRolePolicyDocument:
+      Version: "2012-10-17"
+      Statement:
+        - Effect: "Allow"
+          Principal:
+            Federated: "cognito-identity.amazonaws.com"
+          Action:
+            - "sts:AssumeRoleWithWebIdentity"
+          Condition:
+            StringEquals:
+              "cognito-identity.amazonaws.com:aud":
+                Ref: MargoArtIdentityPool
+            "ForAnyValue:StringLike":
+              "cognito-identity.amazonaws.com:amr": unauthenticated
+    Policies:
+      - PolicyName: "MargoArtUnauthorizedPolicy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - "mobileanalytics:PutEvents"
+                - "cognito-sync:*"
+                - "cognito-identity:*"
+              Resource: "*"

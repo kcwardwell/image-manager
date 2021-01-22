@@ -1,0 +1,15 @@
+ArtWork:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: artWork
+    AttributeDefinitions:
+      - AttributeName: clientId
+        AttributeType: S
+      - AttributeName: artId
+        AttributeType: N
+    KeySchema:
+      - AttributeName: clientId
+        KeyType: HASH
+      - AttributeName: artId
+        KeyType: RANGE
+    BillingMode: PAY_PER_REQUEST
