@@ -6,6 +6,7 @@
 .pnp.js
 stack.json
 config.*
+aws-export.js
 
 # testing
 /coverage
