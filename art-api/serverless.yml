@@ -81,10 +81,10 @@ functions:
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
     events:
-      - httpApi:
-          path: /users/create
+      - http:
+          path: /hello
           method: get
-
+                
 resources:
   Resources:
     ArtBucket: ${file(resources/s3/MargoArtBucket.yml):ArtBucket}

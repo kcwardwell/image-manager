@@ -26,7 +26,7 @@ const MainMenu = () => {
                             Dropdown
                         </Link>
                         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <Link className="dropdown-item" to="#">Action</Link>
+                            <Link className="dropdown-item" to="/user/register">Register</Link>
                             <Link className="dropdown-item" to="#">Another action</Link>
                             <div className="dropdown-divider"></div>
                             <Link className="dropdown-item" to="#">Something else here</Link>
