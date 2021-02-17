@@ -1,6 +1,6 @@
 
 
-service: api-image
+service: api-image-mgr
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -57,22 +57,22 @@ custom: # Add custom section and include webpack configuration
     handler: scripts/output.handler # Same syntax as you already know
     file: scripts/stack.json # toml, yaml, yml, and json format is available
   stage: ${self:provider.stage}
-  ArtBucket:
-    name: art-bucket-ecs-${self:custom.stage}
-  ArtUserPool:
-    name: ecs_margo_user_pool-${self:custom.stage}
-  ArtUserPoolClient:
-    name: ecs_margo_pool_client-${self:custom.stage}
-  ArtIdentityPool:
-    name: ecs_margo_identity_pool-${self:custom.stage}
-  ArtAuthRole: 
-    name: margoArtAuthRole-${self:custom.stage}
-  ArtAuthorizedPolicy:
-    name: "margoArtAuthorizedPolicy-${self:custom.stage}"
-  ArtUnauthRole:
-    name: "margoArtUnauthRole-${self:custom.stage}"
-  ArtUnauthorizedPolicy:
-    name: "margoArtUnauthorizedPolicy-${self:custom.stage}"
+  ImageBucket:
+    name: Image-bucket-ecs-${self:custom.stage}
+  ImageUserPool:
+    name: ecs_image_user_pool-${self:custom.stage}
+  ImageUserPoolClient:
+    name: ecs_image_pool_client-${self:custom.stage}
+  ImageIdentityPool:
+    name: ecs_image_identity_pool-${self:custom.stage}
+  ImageAuthRole: 
+    name: UserImageAuthRole-${self:custom.stage}
+  ImageAuthorizedPolicy:
+    name: "UserImageAuthorizedPolicy-${self:custom.stage}"
+  ImageUnauthRole:
+    name: "UserImageUnauthRole-${self:custom.stage}"
+  ImageUnauthorizedPolicy:
+    name: "UserImageUnauthorizedPolicy-${self:custom.stage}"
 
 functions:
   hello:
@@ -87,23 +87,23 @@ functions:
                 
 resources:
   Resources:
-    ArtBucket: ${file(resources/s3/MargoArtBucket.yml):ArtBucket}
-    ArtBucketPolicy: ${file(resources/s3/MargoArtBucketPolicy.yml):ArtBucketPolicy}
-    MargoArtTable: ${file(resources/dynamodb/MargoArtTable.yml):MargoArtTable}
-    MargoArtUserPool: ${file(resources/cognito/MargoArtCognito.yml):MargoArtUserPool}
-    MargoArtUserPoolClient: ${file(resources/cognito/MargoArtCognito.yml):MargoArtUserPoolClient}
-    MargoArtIdentityPool: ${file(resources/cognito/MargoArtCognito.yml):MargoArtIdentityPool}
-    MargoArtIdentityPoolRoles: ${file(resources/cognito/MargoArtCognito.yml):MargoArtIdentityPoolRoles}
-    MargoArtAuthRole: ${file(resources/cognito/MargoArtCognito.yml):MargoArtAuthRole}
-    MargoArtUnauthRole: ${file(resources/cognito/MargoArtCognito.yml):MargoArtUnauthRole}
+    ImageBucket: ${file(resources/s3/UserImageBucket.yml):ImageBucket}
+    ImageBucketPolicy: ${file(resources/s3/UserImageBucketPolicy.yml):ImageBucketPolicy}
+    UserImageTable: ${file(resources/dynamodb/UserImageTable.yml):UserImageTable}
+    UserImageUserPool: ${file(resources/cognito/UserImageCognito.yml):UserImageUserPool}
+    UserImageUserPoolClient: ${file(resources/cognito/UserImageCognito.yml):UserImageUserPoolClient}
+    UserImageIdentityPool: ${file(resources/cognito/UserImageCognito.yml):UserImageIdentityPool}
+    UserImageIdentityPoolRoles: ${file(resources/cognito/UserImageCognito.yml):UserImageIdentityPoolRoles}
+    UserImageAuthRole: ${file(resources/cognito/UserImageCognito.yml):UserImageAuthRole}
+    UserImageUnauthRole: ${file(resources/cognito/UserImageCognito.yml):UserImageUnauthRole}
   
   Outputs:
-    ArtBucket:
+    ImageBucket:
       Value: 
-        Ref: ArtBucket
-    MargoArtUserPool:
+        Ref: ImageBucket
+    UserImageUserPool:
       Value: 
-        Ref: MargoArtUserPool
+        Ref: UserImageUserPool
     AppClientId:
       Value:
-        Ref: MargoArtUserPoolClient
+        Ref: UserImageUserPoolClient
